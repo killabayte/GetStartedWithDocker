@@ -1,0 +1,33 @@
+#Copy and Paste
+
+1. cat > docker-compose.yml<<EOS
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image:  ${YOUR_USERNAME}/${REPOSITORY_NAME}:${TAG_WHAT_YOU_WANT}
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "4000:80"
+    networks:
+      - webnet
+networks:
+  webnet:
+EOS
+2. docker pull ${YOUR_USERNAME}/${REPOSITORY_NAME}:${TAG_WHAT_YOU_WANT}
+3. docker swarm init
+4. docker stack deploy -c docker-compose.yml ${YOUR_LAB_NAME}
+5. docker service ls
+6. docker service ps ${YOUR_LAB_NAME}
+7. docker container ls -q
+8. curl -4 http://localhost:${YOUR_FREE_PORT}
+9. docker stack deploy -c docker-compose.yml ${YOUR_LAB_NAME}
+10. docker stack rm ${YOUR_LAB_NAME}
+11. docker swarm leave --force

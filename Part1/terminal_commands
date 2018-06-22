@@ -1,0 +1,66 @@
+#Copy and Paste
+
+1. create dockerfile
+2. cat > Dockerfile<<EOS
+# Use an official Python runtime as a parent image
+FROM python:2.7-slim
+# Set the working directory to /app
+WORKDIR /pumpkin
+# Copy the current directory contents into the container at /app
+ADD ./data /pumpkin
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+# Make port 80 available to the world outside this container
+EXPOSE 888
+# Define environment variable
+ENV NAME pumpkin
+ENV COLOR dirty_orange
+# Run app.py when the container launches
+CMD ["python", "app.py"]
+EOS
+3. cat > requirements.txt<<EOS
+Flask
+Redis
+EOS
+4. cat > app.py<<EOS
+from flask import Flask
+from redis import Redis, RedisError
+import os
+import socket
+
+# Connect to Redis
+redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
+
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    try:
+        visits = redis.incr("counter")
+    except RedisError:
+        visits = "<i>cannot connect to Redis, counter disabled</i>"
+
+    html = "<h3>Hello form {name}!</h3>" \
+           "<b>Hostname:</b> {hostname}<br/>" \
+           "<b>Visits:<b> {visits}<br/>" \
+           "<b>Color:</b> {color}"
+    return html.format(name=os.getenv("NAME", "Pumpkin"), hostname=socket.gethostname(), visits=visits, color=os.getenv("COLOR", "dirty_orange"))
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=888)
+EOS
+5. docker build -t ${YOUR_DOCKER_IMAGE_NAME} .
+6. docker image ls
+7. docker run -p ${YOUR_FREE_PORT}:80 ${YOUR_DOCKER_IMAGE_NAME}
+8. curl http://localhost:${YOUR_FREE_PORT}
+9. docker container ls
+10. register on hub.docker.com
+11. docker login
+12. docker tag ${YOUR_DOCKER_IMAGE_NAME} ${YOUR_USERNAME}/${REPOSITORY_NAME}:${TAG_WHAT_YOU_WANT}
+#docker tag friendlyhello gordon/get-started:part2
+13. docker image ls
+14. docker push ${YOUR_USERNAME}/${REPOSITORY_NAME}:${TAG_WHAT_YOU_WANT}
+15. docker rm $(docker ps -a -q)
+16. docker rmi $(docker images -a)
+17. docker run -p ${YOUR_FREE_PORT}:80 ${YOUR_USERNAME}/${REPOSITORY_NAME}:${TAG_WHAT_YOU_WANT}
+18. The End
