@@ -1,0 +1,25 @@
+#Copy and Paste
+
+1. docker-machine create --driver virtualbox myvm1
+2. docker-machine create --driver virtualbox myvm2
+3. docker-machine ls
+4. docker-machine ssh myvm1 "docker swarm init --advertise-addr 192.168.99.100"
+5. docker-machine ssh myvm1 "docker swarm join --token SWMTKN-1-1tk8crauwmr1c2t1b49xqc6hiwptsm7pzyq0jiofrisxcuzhyq-8unxr154tsrr4naf2e1l6dybn 192.168.99.100:2377"
+6. docker-machine ssh myvm2 "docker swarm join --token SWMTKN-1-1tk8crauwmr1c2t1b49xqc6hiwptsm7pzyq0jiofrisxcuzhyq-8unxr154tsrr4naf2e1l6dybn 192.168.99.100:2377"
+7. docker-machine ssh myvm1 "docker node ls"
+8. docker-machine env myvm1
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://192.168.99.100:2376"
+export DOCKER_CERT_PATH="/Users/sam/.docker/machine/machines/myvm1"
+export DOCKER_MACHINE_NAME="myvm1"
+9. eval $(docker-machine env myvm1)
+10. docker-machine ls
+11. docker stack deploy -c docker-compose.yml ${YOUR_STACK_DEPLOY_NAME}
+12. docker stack ps ${YOUR_STACK_DEPLOY_NAME}
+13. curl http://192.168.99.100:${YOUR_DOCKER_APP_PORT}
+14. curl http://192.168.99.101:${YOUR_DOCKER_APP_PORT}
+15. docker stack rm ${YOUR_STACK_DEPLOY_NAME} 
+16. eval $(docker-machine env -u)
+17. docker-machine stop $(docker-machine ls -q)
+18. docker-machine rm $(docker-machine ls -q)
+19. docker-machine ls
