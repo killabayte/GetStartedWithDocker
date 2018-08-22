@@ -1,0 +1,23 @@
+#Copy and Paste
+
+1. docker-machine ls
+2. docker-machine ssh myvm1 "docker node ls"
+3. docker-machine ssh myvm1 "docker stack ps"
+4. docker-machine scp docker-compose.yml myvm1:~
+5. docker-machine ssh myvm1 "docker stack deploy -c docker-compose.yml ${your_stack_name}"
+     5a. docker-machine ssh myvm1 "docker stack deploy -c docker-compose.yml getstartedvegetableslab"
+6. docker-machine ssh myvm1 "docker stack ps getstartedvegetableslab"
+
+7. (In a case with redis container errors)
+   docker-machine ssh myvm1 "mkdir -p /home/docker/data && sudo chown docker.docker /home/docker/data"
+8. docker-machine ls
+9. curl http://192.168.99.${you_current_ip}/
+     results: <h3>Hello form pumpkin!</h3><b>Hostname:</b> a6600cad1d56<br/><b>Visits:<b> 8<br/><b>Color:</b> dirty_orange
+10. curl http://192.168.99.${you_current_ip}:8080/
+      results: "Get UI with your VM status"
+11. docker-machine ssh myvm1 "docker stack rm getstartedvegetableslab"
+12. eval $(docker-machine env -u)
+13. docker-machine stop $(docker-machine ls -q)
+14. docker-machine rm $(docker-machine ls -q)
+15. docker-machine ls
+16. That's it
